@@ -48,10 +48,10 @@ AWS の基礎のハンズオン
 1. VS Code Server の下部のターミナルで下記を実行し、このリポジトリを取得します。
     - もしターミナルが表示されない場合は、左上の三本線メニューから **Terminal** - **New Terminal** を選択します。
     - ```
-      git clone https://github.com/tetsuo-nobe/aws-python-basic.git
+      git clone https://github.com/tetsuo-nobe/aws-basic.git
       ```
     - ```
-      cd aws-python-basic/python_basic/
+      cd aws_sdk
       ```
       
 
