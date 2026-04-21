@@ -22,7 +22,8 @@
 - boto3 がインストール済みであること（`pip3 install boto3`）
 - AWS の認証情報が設定済みであること
 - Amazon Bedrock で `us.amazon.nova-lite-v1:0` モデルが使用できること
-- S3 バケットが `s3/client01-create-bucket.py` で作成済みであること
+- **S3 バケットが `s3/client01-create-bucket.py` で作成済みであること**
+    - すでに削除している場合は、再度実行してバケットを作成しておいてください。
 
 ---
 
@@ -100,3 +101,11 @@ S3 に保存しました。
 cd aws_sdk/challenge1
 python3 challenge.py
 ```
+
+---
+
+## 課題修了時にバケットを削除
+
+- 課題修了時は下記を実行し、バケット内のオブジェクトとバケットを削除しておいてください。
+    - `s3/client12-delete-bucket.py`
+
