@@ -51,7 +51,7 @@ AWS の基礎のハンズオン
       git clone https://github.com/tetsuo-nobe/aws-basic.git
       ```
     - ```
-      cd aws-basic/aws_sdk/
+      cd aws-basic
       ```
       
 
