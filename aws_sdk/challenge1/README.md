@@ -24,6 +24,9 @@
 - Amazon Bedrock で `us.amazon.nova-lite-v1:0` モデルが使用できること
 - **S3 バケットが `s3/client01-create-bucket.py` で作成済みであること**
     - すでに削除している場合は、再度実行してバケットを作成しておいてください。
+    - ```
+      python3 ../s3/client01-create-bucket.py
+      ```
 
 ---
 
@@ -107,5 +110,7 @@ python3 challenge.py
 ## 課題修了時にバケットを削除
 
 - 課題修了時は下記を実行し、バケット内のオブジェクトとバケットを削除しておいてください。
-    - `s3/client12-delete-bucket.py`
+    - ```
+      python3 ../s3/client12-delete-bucket.py
+      ```
 
