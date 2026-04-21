@@ -57,9 +57,10 @@ DynamoDB Client API を使用したテーブル・アイテム操作のサンプ
 | `get_item.py` | `get_item` でプライマリキーを指定してアイテムを取得する（結果整合性・強力な整合性・射影） |
 | `query.py` | `query` でパーティションキー（`userId`）を指定してアイテムを検索する |
 | `update_item.py` | `update_item` で条件付き更新を行う（スコアが 3000 以上なら `life` を増加） |
-| `delete_item.py` | `delete_item` でプライマリキーを指定してアイテムを削除する |
 | `add_gsi.py` | グローバルセカンダリインデックス（GSI）を作成する |
 | `query_gsi.py` | GSI に対して `query` を実行する（`gameId` とスコアの範囲で検索） |
+| `delete_item.py` | `delete_item` でプライマリキーを指定してアイテムを削除する |
+| `delete_table.py` | `delete_table` でテーブルを削除する |
 
 ---
 
@@ -85,14 +86,18 @@ python3 query.py
 # 5. 条件付きでアイテムを更新
 python3 update_item.py
 
-# 6. アイテムを削除
-python3 delete_item.py
-
-# 7. GSI を作成（数分かかります）
+# 6. GSI を作成（数分かかります）
 python3 add_gsi.py
 
-# 8. GSI に対してクエリ
+# 7. GSI に対してクエリ
 python3 query_gsi.py
+
+# 8. アイテムを削除
+python3 delete_item.py
+
+# 9. テーブルを削除
+python3 delete_table.py
+
 ```
 
 ---
@@ -107,4 +112,5 @@ python3 query_gsi.py
 | `query` | パーティションキーを指定して複数アイテムを効率的に検索する |
 | `update_item` | `ConditionExpression` を使った条件付き更新 |
 | `delete_item` | プライマリキーを指定してアイテムを削除する |
+| テーブル削除 | テーブルを削除する |
 | GSI | テーブルとは異なるキーでクエリを実行するためのセカンダリインデックス |
