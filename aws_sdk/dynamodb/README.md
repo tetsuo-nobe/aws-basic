@@ -11,6 +11,20 @@ DynamoDB Client API を使用したテーブル・アイテム操作のサンプ
 
 ---
 
+## 事前準備
+
+
+### リポジトリをクローンする
+
+```bash
+git clone https://github.com/tetsuo-nobe/aws-basic.git
+
+cd aws-basic/
+
+```
+
+---
+
 ## テーブル設計
 
 ### テーブル: `score`
