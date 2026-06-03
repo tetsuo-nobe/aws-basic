@@ -69,7 +69,7 @@ def create_s3_bucket():
     s3_client = boto3.client("s3")
 
     print(f"S3 バケット '{bucket_name}' を作成中...")
-    create_bucket_config = {"LocationConstraint": "us-west-2"}
+    create_bucket_config = {"LocationConstraint": "ap-northeast-1"}
     s3_client.create_bucket(
         Bucket=bucket_name,
         CreateBucketConfiguration=create_bucket_config,
