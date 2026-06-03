@@ -42,7 +42,7 @@ try:
     bedrock_client = boto3.client('bedrock-runtime')
 
     # 使用するモデル ID
-    model_id = "us.amazon.nova-lite-v1:0"
+    model_id = "apac.amazon.nova-lite-v1:0"
 
     # 推論パラメータ
     inference_config = {"temperature": 0.5}
