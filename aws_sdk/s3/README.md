@@ -13,6 +13,18 @@ S3 Client API を使用したバケット・オブジェクト操作のサンプ
 
 ## 事前準備
 
+
+### 1. リポジトリをクローンする
+
+```bash
+git clone https://github.com/tetsuo-nobe/aws-basic.git
+
+cd aws-basic/
+
+```
+
+### 2. バケット名を変数に定義する
+
 `mybucket.py` の `bucket_name` を自分のバケット名に変更してください。バケット名はグローバルで一意である必要があります。
 
 ```python
