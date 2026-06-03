@@ -20,7 +20,7 @@ DynamoDB テーブルからスコアデータを検索し、テキストレポ�
 - Python 3 がインストール済みであること
 - boto3 がインストール済みであること（`pip3 install boto3`）
 - AWS の認証情報が設定済みであること
-- 利用するリージョンは us-west-2 (オレゴン)
+- 利用するリージョンは ap-northeast-1 (東京)
 
 ---
 
@@ -63,7 +63,6 @@ python3 1_create_resources.py
 | `score_data.json` | DynamoDB にロードするサンプルデータ |
 | `1_create_resources.py` | 事前準備スクリプト（DynamoDB テーブル作成・データロード・S3 バケット作成） |
 | `challenge.py` | 課題のテンプレート（ここにコードを記述する） |
-| `challenge_answer.py` | 課題の解答例 |
 | `9_delete_resources.py` | クリーンアップスクリプト（S3 バケット・DynamoDB テーブルの削除） |
 
 ---

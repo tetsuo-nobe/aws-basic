@@ -6,13 +6,13 @@
 
 処理の流れ:
   1. プロンプト（質問文）を文字列の変数として定義する
-  2. Bedrock の Converse API で基盤モデル（us.amazon.nova-lite-v1:0）にリクエストを送信する
+  2. Bedrock の Converse API で基盤モデル（apac.amazon.nova-lite-v1:0）にリクエストを送信する
   3. モデルから返ってきたレスポンス（テキスト）を取得する
   4. プロンプトとレスポンスを合わせたテキストを S3 バケットにオブジェクトとして格納する
   5. 格納が完了したら、保存先のバケット名とオブジェクトキーを表示する
 
 要件:
-  - モデル ID: us.amazon.nova-lite-v1:0
+  - モデル ID: apac.amazon.nova-lite-v1:0
   - API: Bedrock Runtime の Converse API（converse メソッド）
   - システムプロンプト: 自由に設定（例：「あなたは親切なアシスタントです。」）
   - プロンプト: 文字列の変数として定義する
@@ -23,7 +23,7 @@
 前提条件:
   - boto3 がインストール済みであること（pip install boto3）
   - AWS の認証情報が設定済みであること
-  - Amazon Bedrock で us.amazon.nova-lite-v1:0 モデルが使用できること
+  - Amazon Bedrock で apac.amazon.nova-lite-v1:0 モデルが使用できること
   - S3 バケットが s3/client01-create-bucket.py で作成済みであること
 
 ヒント:

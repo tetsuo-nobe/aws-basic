@@ -9,7 +9,7 @@
 ### 処理の流れ
 
 1. プロンプト（質問文）を文字列の変数として定義する
-2. Bedrock の Converse API で基盤モデル（`us.amazon.nova-lite-v1:0`）にリクエストを送信する
+2. Bedrock の Converse API で基盤モデル（`apac.amazon.nova-lite-v1:0`）にリクエストを送信する
 3. モデルから返ってきたレスポンス（テキスト）を取得する
 4. プロンプトとレスポンスを合わせたテキストを S3 バケットにオブジェクトとして格納する
 5. 格納が完了したら、保存先のバケット名とオブジェクトキーを表示する
@@ -21,7 +21,7 @@
 - Python 3 がインストール済みであること
 - boto3 がインストール済みであること（`pip3 install boto3`）
 - AWS の認証情報が設定済みであること
-- Amazon Bedrock で `us.amazon.nova-lite-v1:0` モデルが使用できること
+- Amazon Bedrock で `apac.amazon.nova-lite-v1:0` モデルが使用できること
 - **S3 バケットが `s3/client01-create-bucket.py` で作成済みであること**
     - すでに削除している場合は、再度実行してバケットを作成しておいてください。
     - ```
@@ -35,7 +35,6 @@
 | ファイル名 | 概要 |
 |-----------|------|
 | `challenge.py` | 課題のテンプレート（ここにコードを記述する） |
-| `challenge_answer.py` | 課題の解答例 |
 
 ---
 
@@ -43,7 +42,7 @@
 
 | 項目 | 内容 |
 |------|------|
-| モデル ID | `us.amazon.nova-lite-v1:0` |
+| モデル ID | `apac.amazon.nova-lite-v1:0` |
 | API | Bedrock Runtime の Converse API（`converse` メソッド） |
 | システムプロンプト | 自由に設定（例：「あなたは親切なアシスタントです。」） |
 | プロンプト定義 | 文字列の変数として定義する（例：`prompt = "日本で一番高い山はなんですか？"`） |
