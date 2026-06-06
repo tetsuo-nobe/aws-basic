@@ -25,10 +25,14 @@ Amazon Bedrock の Converse API を使用して基盤モデル（Amazon Nova Lit
 
 ```bash
 cd aws_sdk/bedrock
+```
 
+```bash
 # Converse API（複数ターンの会話）
 python converse_api.py
+```
 
+```bash
 # Converse Stream API（ストリーミング表示）
 python converse_stream_api.py
 ```
