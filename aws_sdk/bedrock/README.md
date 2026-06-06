@@ -5,10 +5,10 @@ Amazon Bedrock の Converse API を使用して基盤モデル（Amazon Nova Lit
 ## 前提条件
 
 - Python 3 がインストール済みであること
-- boto3 がインストール済みであること（`pip3 install boto3`）
+- boto3 がインストール済みであること（`pip install boto3`）
 - AWS の認証情報が設定済みであること
-- Amazon Bedrock で `us.amazon.nova-lite-v1:0` モデルが使用できること
-- 利用するリージョンは us-west-2 (オレゴン)
+- Amazon Bedrock で `amazon.nova-lite-v1:0` モデルが使用できること
+- 利用するリージョンは東京 (ap-northeast-1)
 
 ---
 
