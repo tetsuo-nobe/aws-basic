@@ -92,7 +92,7 @@ def lambda_handler(event, context):
 
 | 項目 | 設定値 |
 |------|--------|
-| Intent | Create a new API |
+| インテント | 新規 API を作成 |
 | API タイプ | REST API |
 | セキュリティ | オープン |
 
