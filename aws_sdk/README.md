@@ -7,7 +7,7 @@ AWS SDK for Python (boto3) を使用した各サービスの操作サンプル�
 - Python 3 がインストール済みであること
 - boto3 がインストール済みであること（`pip3 install boto3`）
 - AWS の認証情報が設定済みであること
-- 利用するリージョンは us-west-2 (オレゴン)
+- 利用するリージョンは 東京 (ap-northeast-1)
 
 ---
 
