@@ -13,7 +13,7 @@ AWS マネジメントコンソールを使用して Lambda 関数を作成し�
 ### 1-1. Lambda コンソールを開く
 
 1. AWS マネジメントコンソールにサインインする
-2. 上部の検索バーに「Lambda」と入力し、Lambda サービスを選択する
+2. 上部の検索バーに `lambda` と入力し、Lambda サービスを選択する
 3. 「関数の作成」または「関数を作成」ボタンをクリックする
 
 ### 1-2. 関数の基本設定
@@ -122,7 +122,7 @@ def lambda_handler(event, context):
 
 ### 4-2. API Gateway の削除
 
-1. 上部の検索バーに「API Gateway」と入力し、API Gateway サービスを選択する
+1. 上部の検索バーに `apigateway` と入力し、API Gateway サービスを選択する
 1. 作成された API (例: my-handson-function-API) のラジオボタンを選択する
 1. 「削除」を選択する
 1. 確認ダイアログで `確認` を入力して「削除」をクリックする
