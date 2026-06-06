@@ -129,7 +129,7 @@ def lambda_handler(event, context):
 
 ### 4-3. IAM ロールの削除
 
-1. 上部の検索バーに「IAM」と入力し、IAM サービスを選択する
+1. 上部の検索バーに `iam` と入力し、IAM サービスを選択する
 2. 左メニューから「ロール」をクリックする
 3. Lambda 関数作成時に自動生成されたロール（例：`my-handson-function-role-xxxxxxxx`）を検索して選択する
 4. 「削除」ボタンをクリックする
