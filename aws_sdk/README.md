@@ -5,7 +5,7 @@ AWS SDK for Python (boto3) を使用した各サービスの操作サンプル�
 ## 前提条件
 
 - Python 3 がインストール済みであること
-- boto3 がインストール済みであること（`pip3 install boto3`）
+- boto3 がインストール済みであること（`pip install boto3`）
 - AWS の認証情報が設定済みであること
 - 利用するリージョンは 東京 (ap-northeast-1)
 
@@ -14,6 +14,8 @@ AWS SDK for Python (boto3) を使用した各サービスの操作サンプル�
 ## セットアップ
 
 ### 1. リポジトリをクローンする
+
+* ターミナルの初期のフォルダにいることを確認して下記を実行
 
 ```bash
 git clone https://github.com/tetsuo-nobe/aws-basic.git
