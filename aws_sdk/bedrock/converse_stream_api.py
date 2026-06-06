@@ -52,7 +52,7 @@ def print_stream(stream):
 bedrock_client = boto3.client('bedrock-runtime', region_name = 'ap-northeast-1')
 
 # 使用するモデル ID
-model_id = "apac.amazon.nova-lite-v1:0"
+model_id = "amazon.nova-lite-v1:0"
 
 # 推論パラメータ
 inference_config = {"temperature": 0.5}
