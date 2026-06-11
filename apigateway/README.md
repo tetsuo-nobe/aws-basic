@@ -130,7 +130,7 @@
 
 15. AWS マネジメントコンソールの左下にある **CloudShell** のアイコンをクリックして CloudShell を起動します。
 
-1. 下記の curl コマンドを実行します。（URL は自分の API の URL に置換えて下さい）
+1. 下記の curl コマンドを実行します。（URL は自分の API の URL に置換えて、最後に `/greeting` をつけてください。）
    ```bash
    curl -X POST \
      -H "Content-Type: application/json" \
