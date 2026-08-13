@@ -82,57 +82,56 @@ AWS マネジメントコンソールを使用して EC2 インスタンスを�
 
 ブラウザ上でターミナルセッションが開き、インスタンスに接続できます。
 
-* 次のコマンドを実行してみる
-    - 現在の OS ユーザー名表示: `whoami`
-    - カレントディレクトリ表示: `pwd`
-    - OS ユーザーのホームディレクトリ表示: `echo $HOME`
-    - 他の OS ユーザー: ec2-user にスイッチ: `sudo su - ec2-user`
+1. 下記のコマンドを実行する
 
+```bash
+cd  ~
+```
 
 ---
 
-## 3. Apache HTTP Server のインストール
+## 3. Python Web アプリケーションの作成
 
 Session Manager で接続した状態で、以下のコマンドを順に実行します。
 
-1. パッケージを最新に更新する
+### 3-1. Flask のインストール
+
+1. pip を使って Flask をインストールする
 
 ```bash
-sudo dnf update -y
+sudo pip3 install flask
 ```
 
-2. Apache HTTP Server をインストールする
+### 3-2. アプリケーションファイルの作成
+
+1. Web アプリケーションのコードを作成する
 
 ```bash
-sudo dnf install -y httpd
+cat << 'EOF' > ~/app.py
+from flask import Flask
+
+app = Flask(__name__)
+
+@app.route("/")
+def hello():
+    return "<h1>Hello EC2!</h1>"
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=80)
+EOF
 ```
 
-3. Apache を起動し、OS 起動時に自動起動するよう設定する
+### 3-3. アプリケーションの起動
+
+1. Flask アプリケーションを起動する
 
 ```bash
-sudo systemctl start httpd
-sudo systemctl enable httpd
+sudo python3 ~/app.py &
 ```
 
-4. Apache が起動していることを確認する
+> `Running on http://0.0.0.0:80` と表示されれば起動成功です。
 
-```bash
-sudo systemctl status httpd
-```
-
-> `Active: active (running)` と表示されれば OK です。
-
----
-
-## 4. HTML ファイルの作成
-
-1. `Hello EC2!` を表示する HTML ファイルを作成する
-
-```bash
-echo '<h1>Hello EC2!</h1>' | sudo tee /var/www/html/index.html
-```
-
-1. ローカルで動作確認する
+2. ローカルで動作確認する
 
 ```bash
 curl http://localhost
@@ -140,12 +139,15 @@ curl http://localhost
 
 > `<h1>Hello EC2!</h1>` と表示されれば成功です。
 
-#### ブラウザからアクセスする場合
+---
 
-1. EC2 ダッシュボードでインスタンスを選択する。
-1. インスタンス詳細画面で パブリック IPv4 を確認する。
-1. ブラウザで `http://<インスタンスのパブリック IPv4>` にアクセスする。
+## 4. ブラウザからアクセスする
 
+1. EC2 ダッシュボードでインスタンスを選択する
+1. インスタンス詳細画面で「パブリック IPv4 アドレス」を確認する
+1. ブラウザで `http://<インスタンスのパブリック IPv4>` にアクセスする
+
+> 「Hello EC2!」と表示されれば成功です。
 
 ---
 
@@ -153,7 +155,7 @@ curl http://localhost
 
 ハンズオン終了後、不要な課金を防ぐためにインスタンスを終了します。
 
-1. Session Manager のブラウザのラブを閉じる
+1. Session Manager のブラウザのタブを閉じる
 1. EC2 ダッシュボードの「インスタンス」画面で、作成したインスタンスを選択する
 2. 「インスタンスの状態」ドロップダウンから「インスタンスを終了 (削除)」を選択する
 3. 確認ダイアログで「終了 (削除)」をクリックする
