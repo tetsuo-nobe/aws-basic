@@ -7,6 +7,10 @@ AWS マネジメントコンソールを使用して EC2 インスタンスを�
 - AWS アカウントを持っていること
 - IAM ロール `my-role-for-session-manager` が作成済みであること
   - `AmazonSSMManagedInstanceCore` ポリシーがアタッチされていること
+  - CloudShell で下記を実行することで、このロールを作成可能
+  - ```
+    curl -s https://tnobep-demo-public.s3.ap-northeast-1.amazonaws.com/create_ssm_role.sh | bash
+    ```
 - デフォルト VPC が存在すること
 
 ---
