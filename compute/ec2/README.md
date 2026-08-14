@@ -114,7 +114,7 @@ sudo dnf install -y python3-pip
 sudo pip3 install flask
 ```
 
-* インストール後に WARNING が表示されても無視して下さい。
+> インストール後に WARNING が表示されても無視して下さい。
 
 ### 3-2. アプリケーションファイルの作成
 
@@ -143,7 +143,9 @@ EOF
 sudo python3 ~/app.py &
 ```
 
-> `Running on http://0.0.0.0:80` と表示されれば起動成功です。
+> ` Running on all addresses (0.0.0.0)` と表示されれば起動成功です。
+
+> プロンプトが戻らない場合は、Enter キーを押下してみてください。
 
 2. ローカルで動作確認する
 
