@@ -102,7 +102,13 @@ Session Manager で接続した状態で、以下のコマンドを順に実行�
 
 ### 3-1. Flask のインストール
 
-1. pip を使って Flask をインストールする
+1. pip をインストールする
+
+```bash
+sudo dnf install -y python3-pip
+```
+
+2. Flask をインストールする
 
 ```bash
 sudo pip3 install flask
