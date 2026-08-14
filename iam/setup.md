@@ -34,7 +34,7 @@ aws cloudformation create-stack `
 * スタック削除時は下記を実行
 
 ```
-aws cloudformation delete-stack --stack-name iam-handson-stack
+aws cloudformation delete-stack --stack-name iam-handson-stack --profile default --region ap-northeast-1
 ```
 
 ## AWS CLI を使用して作成する場合は下記

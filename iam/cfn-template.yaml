@@ -89,14 +89,13 @@ Resources:
               - lambda:CreateFunction
               - lambda:DeleteFunction
             Resource: "*"
-          - Sid: AllowPassRoleForLambda
+          - Sid: AllowIamRoleForLambda
             Effect: Allow
             Action:
+              - iam:CreateRole
+              - iam:AttachRolePolicy
               - iam:PassRole
-            Resource: "*"
-            Condition:
-              StringEquals:
-                iam:PassedToService: lambda.amazonaws.com
+            Resource: !Sub "arn:aws:iam::${AWS::AccountId}:role/service-role/*"
 
   # ------------------------------------------------
   # Lambda Execution Role (used when creating Lambda functions in the handson)
