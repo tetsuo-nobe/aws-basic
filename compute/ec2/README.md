@@ -114,6 +114,8 @@ sudo dnf install -y python3-pip
 sudo pip3 install flask
 ```
 
+* インストール後に WARNING が表示されても無視して下さい。
+
 ### 3-2. アプリケーションファイルの作成
 
 1. Web アプリケーションのコードを作成する
