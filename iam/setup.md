@@ -3,17 +3,32 @@
 
 ## AWS CloudFormation を使用する場合は下記
 
-```
+* Linux / macOS / CloudShell の場合
+```bash
 export PASSWD=Demo@0000
-export BUCKET_PREFIX=tnobep0000
 
 aws cloudformation create-stack \
   --stack-name iam-handson-stack \
   --template-body file://cfn-template.yaml \
   --parameters \
     ParameterKey=UserPassword,ParameterValue="${PASSWD}" \
-    ParameterKey=S3BucketPrefix,ParameterValue="${BUCKET_PREFIX}" \
-  --capabilities CAPABILITY_NAMED_IAM
+  --capabilities CAPABILITY_NAMED_IAM \
+  --profile default \
+  --region ap-northeast-1
+```
+
+* Windows PowerShell の場合
+```powershell
+$PASSWD = "Demo@0000"
+
+aws cloudformation create-stack `
+  --stack-name iam-handson-stack `
+  --template-body file://cfn-template.yaml `
+  --parameters `
+    ParameterKey=UserPassword,ParameterValue="$PASSWD" `
+  --capabilities CAPABILITY_NAMED_IAM `
+  --profile default `
+  --region ap-northeast-1
 ```
 
 * スタック削除時は下記を実行
@@ -28,7 +43,7 @@ aws cloudformation delete-stack --stack-name iam-handson-stack
 
 - AWS CLI がインストール・設定済みであること
 - IAM の管理権限を持つユーザーまたはロールで実行すること
-- `allmost_readonly.json` と `s3_policy.json` が手元にあること
+- `allmost_readonly.json` と `lambda_policy.json` が手元にあること
 
 ---
 
@@ -68,7 +83,7 @@ aws iam add-user-to-group --user-name demo-user2 --group-name demo-group2
 
 ---
 
-## 4. ポリシーの作成とグループへの付与
+## 4. ポリシーとロールの作成、グループへの付与
 
 ### 4-0. AWS 認証情報を環境変数に設定する
 
@@ -92,7 +107,7 @@ export AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output tex
 echo $AWS_ACCOUNT_ID
 ```
 
-### 4-1. allmost_readonly ポリシーを作成し demo-group1 に付与
+### 4-2. allmost_readonly ポリシーを作成し demo-group1 に付与
 
 ```bash
 aws iam create-policy --policy-name allmost-readonly-policy --policy-document file://allmost_readonly.json
@@ -102,15 +117,48 @@ aws iam create-policy --policy-name allmost-readonly-policy --policy-document fi
 aws iam attach-group-policy --group-name demo-group1 --policy-arn arn:aws:iam::${AWS_ACCOUNT_ID}:policy/allmost-readonly-policy
 ```
 
-### 4-2. s3_policy ポリシーを作成し、allmost_readonly ポリシーとともに demo-group2 に付与
+### 4-3. lambda_policy ポリシーを作成し、allmost_readonly ポリシーとともに demo-group2 に付与
 
 ```bash
-aws iam create-policy --policy-name s3-handson-policy --policy-document file://s3_policy.json
+aws iam create-policy --policy-name lambda-handson-policy --policy-document file://lambda_policy.json
 ```
 
 ```bash
-aws iam attach-group-policy --group-name demo-group2 --policy-arn arn:aws:iam::${AWS_ACCOUNT_ID}:policy/s3-handson-policy
+aws iam attach-group-policy --group-name demo-group2 --policy-arn arn:aws:iam::${AWS_ACCOUNT_ID}:policy/lambda-handson-policy
 aws iam attach-group-policy --group-name demo-group2 --policy-arn arn:aws:iam::${AWS_ACCOUNT_ID}:policy/allmost-readonly-policy
+```
+
+### 4-4. Lambda 実行ロールを作成する
+
+ハンズオンで Lambda 関数を作成する際に指定する実行ロールを作成します。
+
+```bash
+cat <<EOF > trust-policy.json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "lambda.amazonaws.com"
+      },
+      "Action": "sts:AssumeRole"
+    }
+  ]
+}
+EOF
+```
+
+```bash
+aws iam create-role \
+  --role-name lambda-handson-execution-role \
+  --assume-role-policy-document file://trust-policy.json
+```
+
+```bash
+aws iam attach-role-policy \
+  --role-name lambda-handson-execution-role \
+  --policy-arn arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
 ```
 
 ---
@@ -136,13 +184,13 @@ aws iam list-attached-group-policies --group-name demo-group2
 ## 6. クリーンアップ（すべて削除）
 
 ハンズオン終了後、作成したリソースをすべて削除します。  
-削除は依存関係の順序（ポリシーのデタッチ → ユーザーのグループ除外 → ユーザー削除 → グループ削除 → ポリシー削除）で行います。
+削除は依存関係の順序（ポリシーのデタッチ → ユーザーのグループ除外 → ユーザー削除 → グループ削除 → ロール削除 → ポリシー削除）で行います。
 
 ### 6-1. グループからポリシーをデタッチする
 
 ```bash
 aws iam detach-group-policy --group-name demo-group1 --policy-arn arn:aws:iam::${AWS_ACCOUNT_ID}:policy/allmost-readonly-policy
-aws iam detach-group-policy --group-name demo-group2 --policy-arn arn:aws:iam::${AWS_ACCOUNT_ID}:policy/s3-handson-policy
+aws iam detach-group-policy --group-name demo-group2 --policy-arn arn:aws:iam::${AWS_ACCOUNT_ID}:policy/lambda-handson-policy
 aws iam detach-group-policy --group-name demo-group2 --policy-arn arn:aws:iam::${AWS_ACCOUNT_ID}:policy/allmost-readonly-policy
 ```
 
@@ -174,9 +222,25 @@ aws iam delete-group --group-name demo-group1
 aws iam delete-group --group-name demo-group2
 ```
 
-### 6-6. ポリシーを削除する
+### 6-6. Lambda 実行ロールを削除する
+
+```bash
+aws iam detach-role-policy \
+  --role-name lambda-handson-execution-role \
+  --policy-arn arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+
+aws iam delete-role --role-name lambda-handson-execution-role
+```
+
+### 6-7. ポリシーを削除する
 
 ```bash
 aws iam delete-policy --policy-arn arn:aws:iam::${AWS_ACCOUNT_ID}:policy/allmost-readonly-policy
-aws iam delete-policy --policy-arn arn:aws:iam::${AWS_ACCOUNT_ID}:policy/s3-handson-policy
+aws iam delete-policy --policy-arn arn:aws:iam::${AWS_ACCOUNT_ID}:policy/lambda-handson-policy
+```
+
+### 6-8. 一時ファイルを削除する
+
+```bash
+rm -f trust-policy.json
 ```

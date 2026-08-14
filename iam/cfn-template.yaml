@@ -11,11 +11,6 @@ Parameters:
     NoEcho: true
     MinLength: 8
 
-  S3BucketPrefix:
-    Type: String
-    Description: S3 bucket name prefix (e.g. tnobe0000-)
-    Default: tnobe0000-
-
 # ==================================================
 # Resources
 # ==================================================
@@ -81,27 +76,44 @@ Resources:
               - tag:Get*
             Resource: "*"
 
-  S3HandsonPolicy:
+  LambdaHandsonPolicy:
     Type: AWS::IAM::ManagedPolicy
     Properties:
-      ManagedPolicyName: s3-handson-policy
+      ManagedPolicyName: lambda-handson-policy
       PolicyDocument:
         Version: "2012-10-17"
         Statement:
-          - Sid: AllowS3BucketOperationsWithPrefix
+          - Sid: AllowLambdaCreateAndDelete
             Effect: Allow
             Action:
-              - s3:CreateBucket
-              - s3:DeleteBucket
-              - s3:PutEncryptionConfiguration
-            Resource: !Sub "arn:aws:s3:::${S3BucketPrefix}*"
-          - Sid: AllowS3ObjectOperationsWithPrefix
+              - lambda:CreateFunction
+              - lambda:DeleteFunction
+            Resource: "*"
+          - Sid: AllowPassRoleForLambda
             Effect: Allow
             Action:
-              - s3:PutObject
-              - s3:GetObject
-              - s3:DeleteObject
-            Resource: !Sub "arn:aws:s3:::${S3BucketPrefix}*/*"
+              - iam:PassRole
+            Resource: "*"
+            Condition:
+              StringEquals:
+                iam:PassedToService: lambda.amazonaws.com
+
+  # ------------------------------------------------
+  # Lambda Execution Role (used when creating Lambda functions in the handson)
+  # ------------------------------------------------
+  LambdaBasicExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: lambda-handson-execution-role
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
 
   # ------------------------------------------------
   # IAM Groups
@@ -119,7 +131,7 @@ Resources:
       GroupName: demo-group2
       ManagedPolicyArns:
         - !Ref AllMostReadOnlyPolicy
-        - !Ref S3HandsonPolicy
+        - !Ref LambdaHandsonPolicy
 
   # ------------------------------------------------
   # IAM Users
@@ -164,6 +176,10 @@ Outputs:
     Description: AllMostReadOnly policy ARN
     Value: !Ref AllMostReadOnlyPolicy
 
-  S3HandsonPolicyArn:
-    Description: S3 handson policy ARN
-    Value: !Ref S3HandsonPolicy
+  LambdaHandsonPolicyArn:
+    Description: Lambda handson policy ARN
+    Value: !Ref LambdaHandsonPolicy
+
+  LambdaExecutionRoleArn:
+    Description: Lambda execution role ARN (used when creating Lambda functions)
+    Value: !GetAtt LambdaBasicExecutionRole.Arn
