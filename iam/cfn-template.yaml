@@ -93,9 +93,10 @@ Resources:
             Effect: Allow
             Action:
               - iam:CreateRole
+              - iam:CreatePolicy
               - iam:AttachRolePolicy
               - iam:PassRole
-            Resource: !Sub "arn:aws:iam::${AWS::AccountId}:role/service-role/*"
+            Resource: "*"
 
   # ------------------------------------------------
   # Lambda Execution Role (used when creating Lambda functions in the handson)
