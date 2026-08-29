@@ -127,7 +127,7 @@ def lambda_handler(event, context):
 ### 4-2. API Gateway の削除
 
 1. 上部の検索バーに `apigateway` と入力し、**API Gateway** サービスを選択する
-1. 作成された API (例: my-function-99-API) のラジオボタンを選択する
+1. 作成された API (例: my-function-9999-API) のラジオボタンを選択する
 1. **「削除」** を選択する
 1. 確認ダイアログで `確認` を入力して **「削除」** をクリックする
 
@@ -135,7 +135,7 @@ def lambda_handler(event, context):
 
 1. 上部の検索バーに `iam` と入力し、**IAM** サービスを選択する
 2. 左メニューから **「ロール」** をクリックする
-3. Lambda 関数作成時に自動生成されたロール（例：`my-function-99-role-xxxxxxxx`）を検索して選択する
+3. Lambda 関数作成時に自動生成されたロール（例：`my-function-9999-role-xxxxxxxx`）を検索して選択する
 4. **「削除」** ボタンをクリックする
 5. 確認ダイアログでロール名を入力し **「削除」** をクリックする
 
