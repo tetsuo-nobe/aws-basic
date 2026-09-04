@@ -102,10 +102,7 @@ aws cloudformation deploy \
 
 > IAM ロールを作成するため `--capabilities CAPABILITY_IAM` が必要です。
 
-5. スタックの作成が完了したら、CloudShell の画面右上の **「アクション」** から **「削除」** を選択し、CloudShell を閉じる
-    - もしくは、CloudShell のタブ（またはパネル）を閉じる
-
-> 以降の手順はマネジメントコンソールで操作するため、CloudShell は閉じてかまいません。クリーンアップ（手順 5）で再度使用しますが、その際に改めて開きます。
+5. CloudShell を閉じる
 
 ### 1-4. 作成されたリソースを確認する
 
