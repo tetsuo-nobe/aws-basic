@@ -1,6 +1,22 @@
 # aws-basic
 AWS の基礎のハンズオン
 
+AWS 初心者向けに、マネジメントコンソールや AWS SDK を使った基礎的なハンズオンをまとめています。
+
+---
+
+## ハンズオン一覧
+
+| ハンズオン | 内容 |
+|-----------|------|
+| [EC2 インスタンス作成](./compute/ec2/README.md) | EC2 インスタンスを作成し、Session Manager で接続して Web アプリを動かす |
+| [AWS Lambda 関数作成](./compute/lambda/README.md) | サーバーレスな Lambda 関数を作成する |
+| [Amazon S3](./s3/README.md) | バケット作成、オブジェクトのアップロード、パブリックアクセスの設定 |
+| [VPC 作成](./vpc/README.md) | VPC・Public サブネットを作成し、Public サブネット上に Web サーバーを構築する |
+| [ELB (Application Load Balancer)](./elb/README.md) | CloudFormation で構築した 2つの EC2 インスタンスに ALB で負荷分散する |
+
+> 各ハンズオンは独立して実施できます。ネットワークやロードバランサーの理解を深めたい場合は、EC2 → VPC → ELB の順に進めるのがおすすめです。
+
 ---
 
 ## AWS SDK のハンズオン用に開発環境を作成する場合、以下の手順を実施して下さい。
