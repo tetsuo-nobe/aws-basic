@@ -1,0 +1,269 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'ALB Handson - VPC, Public/Private Subnets, NAT Gateway, 2 EC2 instances in Private Subnets, and Security Groups'
+
+# Parameters section
+Parameters:
+  # Dynamically retrieve the latest Amazon Linux 2023 AMI from the SSM Parameter Store
+  LatestAmiId:
+    Type: 'AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>'
+    Default: '/aws/service/ami-amazon-linux-latest/al2023-ami-kernel-default-x86_64'
+    Description: 'Latest Amazon Linux 2023 AMI ID (SSM parameter)'
+
+# Resources section
+Resources:
+  # VPC
+  VPC:
+    Type: 'AWS::EC2::VPC'
+    Properties:
+      CidrBlock: '10.0.0.0/16'
+      EnableDnsHostnames: true
+      EnableDnsSupport: true
+      Tags:
+        - Key: Name
+          Value: 'alb-handson-vpc'
+
+  # Internet Gateway (for Public Subnets)
+  InternetGateway:
+    Type: 'AWS::EC2::InternetGateway'
+    Properties:
+      Tags:
+        - Key: Name
+          Value: 'alb-handson-igw'
+  VPCGatewayAttachment:
+    Type: 'AWS::EC2::VPCGatewayAttachment'
+    Properties:
+      VpcId: !Ref VPC
+      InternetGatewayId: !Ref InternetGateway
+
+  # Two Public Subnets (placed in two AZs)
+  PublicSubnet01:
+    Type: 'AWS::EC2::Subnet'
+    Properties:
+      AvailabilityZone: !Select [0, !GetAZs '']
+      CidrBlock: '10.0.0.0/24'
+      VpcId: !Ref VPC
+      MapPublicIpOnLaunch: true
+      Tags:
+        - Key: Name
+          Value: 'alb-handson-public-subnet-1'
+  PublicSubnet02:
+    Type: 'AWS::EC2::Subnet'
+    Properties:
+      AvailabilityZone: !Select [1, !GetAZs '']
+      CidrBlock: '10.0.1.0/24'
+      VpcId: !Ref VPC
+      MapPublicIpOnLaunch: true
+      Tags:
+        - Key: Name
+          Value: 'alb-handson-public-subnet-2'
+
+  # Two Private Subnets (placed in two AZs)
+  PrivateSubnet01:
+    Type: 'AWS::EC2::Subnet'
+    Properties:
+      AvailabilityZone: !Select [0, !GetAZs '']
+      CidrBlock: '10.0.2.0/24'
+      VpcId: !Ref VPC
+      Tags:
+        - Key: Name
+          Value: 'alb-handson-private-subnet-1'
+  PrivateSubnet02:
+    Type: 'AWS::EC2::Subnet'
+    Properties:
+      AvailabilityZone: !Select [1, !GetAZs '']
+      CidrBlock: '10.0.3.0/24'
+      VpcId: !Ref VPC
+      Tags:
+        - Key: Name
+          Value: 'alb-handson-private-subnet-2'
+
+  # One NAT Gateway (for outbound traffic from Private Subnets)
+  NatGatewayEIP:
+    Type: 'AWS::EC2::EIP'
+    Properties:
+      Domain: vpc
+  NatGateway:
+    Type: 'AWS::EC2::NatGateway'
+    Properties:
+      AllocationId: !GetAtt NatGatewayEIP.AllocationId
+      SubnetId: !Ref PublicSubnet01
+      Tags:
+        - Key: Name
+          Value: 'alb-handson-natgw'
+
+  # Route table for Public Subnets
+  RouteTableForPublic:
+    Type: 'AWS::EC2::RouteTable'
+    Properties:
+      VpcId: !Ref VPC
+      Tags:
+        - Key: Name
+          Value: 'alb-handson-public-rt'
+  RoutePublicToInternet:
+    Type: 'AWS::EC2::Route'
+    DependsOn: VPCGatewayAttachment
+    Properties:
+      RouteTableId: !Ref RouteTableForPublic
+      DestinationCidrBlock: '0.0.0.0/0'
+      GatewayId: !Ref InternetGateway
+  RouteTableAssociationPublic1:
+    Type: 'AWS::EC2::SubnetRouteTableAssociation'
+    Properties:
+      SubnetId: !Ref PublicSubnet01
+      RouteTableId: !Ref RouteTableForPublic
+  RouteTableAssociationPublic2:
+    Type: 'AWS::EC2::SubnetRouteTableAssociation'
+    Properties:
+      SubnetId: !Ref PublicSubnet02
+      RouteTableId: !Ref RouteTableForPublic
+
+  # Route table for Private Subnets (outbound via NAT Gateway)
+  RouteTableForPrivate:
+    Type: 'AWS::EC2::RouteTable'
+    Properties:
+      VpcId: !Ref VPC
+      Tags:
+        - Key: Name
+          Value: 'alb-handson-private-rt'
+  RoutePrivateToNATGateway:
+    Type: 'AWS::EC2::Route'
+    Properties:
+      RouteTableId: !Ref RouteTableForPrivate
+      DestinationCidrBlock: '0.0.0.0/0'
+      NatGatewayId: !Ref NatGateway
+  RouteTableAssociationPrivate1:
+    Type: 'AWS::EC2::SubnetRouteTableAssociation'
+    Properties:
+      SubnetId: !Ref PrivateSubnet01
+      RouteTableId: !Ref RouteTableForPrivate
+  RouteTableAssociationPrivate2:
+    Type: 'AWS::EC2::SubnetRouteTableAssociation'
+    Properties:
+      SubnetId: !Ref PrivateSubnet02
+      RouteTableId: !Ref RouteTableForPrivate
+
+  # Security group for ALB (allow HTTP from 0.0.0.0/0)
+  ALBSG:
+    Type: 'AWS::EC2::SecurityGroup'
+    Properties:
+      GroupName: 'ALB-SG'
+      GroupDescription: 'Allow HTTP from anywhere to ALB'
+      VpcId: !Ref VPC
+      Tags:
+        - Key: Name
+          Value: 'ALB-SG'
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: '0.0.0.0/0'
+          Description: 'HTTP from anywhere'
+
+  # Security group for EC2 instances (allow HTTP only from ALB-SG)
+  WebSG:
+    Type: 'AWS::EC2::SecurityGroup'
+    Properties:
+      GroupName: 'Web-SG'
+      GroupDescription: 'Allow HTTP from ALB-SG only'
+      VpcId: !Ref VPC
+      Tags:
+        - Key: Name
+          Value: 'Web-SG'
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          SourceSecurityGroupId: !Ref ALBSG
+          Description: 'HTTP from ALB-SG'
+
+  # IAM role for EC2 instances (for Session Manager)
+  WebServerRole:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - ec2.amazonaws.com
+            Action:
+              - 'sts:AssumeRole'
+      Path: /
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore
+      Tags:
+        - Key: Name
+          Value: 'alb-handson-role'
+  WebServerInstanceProfile:
+    Type: 'AWS::IAM::InstanceProfile'
+    Properties:
+      Path: '/'
+      Roles:
+        - !Ref WebServerRole
+
+  # EC2 instance 1 (Private Subnet 1)
+  WebServer01:
+    Type: 'AWS::EC2::Instance'
+    DependsOn: RoutePrivateToNATGateway
+    Properties:
+      ImageId: !Ref LatestAmiId
+      InstanceType: t3.micro
+      SubnetId: !Ref PrivateSubnet01
+      SecurityGroupIds:
+        - !Ref WebSG
+      IamInstanceProfile: !Ref WebServerInstanceProfile
+      UserData:
+        Fn::Base64: |
+          #!/bin/bash
+          TOKEN=$(curl -X PUT "http://169.254.169.254/latest/api/token" -H "X-aws-ec2-metadata-token-ttl-seconds: 21600")
+          AZ=$(curl -H "X-aws-ec2-metadata-token: $TOKEN" -s http://169.254.169.254/latest/meta-data/placement/availability-zone)
+          dnf install -y httpd
+          systemctl enable httpd
+          systemctl start httpd
+          echo "<h1>Hello from ${AZ}</h1>" > /var/www/html/index.html
+      Tags:
+        - Key: Name
+          Value: 'alb-handson-web-1'
+
+  # EC2 instance 2 (Private Subnet 2)
+  WebServer02:
+    Type: 'AWS::EC2::Instance'
+    DependsOn: RoutePrivateToNATGateway
+    Properties:
+      ImageId: !Ref LatestAmiId
+      InstanceType: t3.micro
+      SubnetId: !Ref PrivateSubnet02
+      SecurityGroupIds:
+        - !Ref WebSG
+      IamInstanceProfile: !Ref WebServerInstanceProfile
+      UserData:
+        Fn::Base64: |
+          #!/bin/bash
+          TOKEN=$(curl -X PUT "http://169.254.169.254/latest/api/token" -H "X-aws-ec2-metadata-token-ttl-seconds: 21600")
+          AZ=$(curl -H "X-aws-ec2-metadata-token: $TOKEN" -s http://169.254.169.254/latest/meta-data/placement/availability-zone)
+          dnf install -y httpd
+          systemctl enable httpd
+          systemctl start httpd
+          echo "<h1>Hello from ${AZ}</h1>" > /var/www/html/index.html
+      Tags:
+        - Key: Name
+          Value: 'alb-handson-web-2'
+
+# Outputs section
+Outputs:
+  VPCId:
+    Description: 'ID of the created VPC'
+    Value: !Ref VPC
+  WebServer01Id:
+    Description: 'ID of EC2 instance 1'
+    Value: !Ref WebServer01
+  WebServer02Id:
+    Description: 'ID of EC2 instance 2'
+    Value: !Ref WebServer02
+  WebSGId:
+    Description: 'Security group ID of Web-SG'
+    Value: !Ref WebSG
+  ALBSGId:
+    Description: 'Security group ID of ALB-SG'
+    Value: !Ref ALBSG
