@@ -100,7 +100,7 @@ aws cloudformation deploy \
 3. `Waiting for stack create/update to complete` と表示され、しばらく待つ（5〜7 分程度）
 4. `Successfully created/updated stack - alb-handson-stack-99` のように表示されれば作成完了です。
 
-> IAM ロールを作成するため `--capabilities CAPABILITY_IAM` が必要です。
+> 参考:  オプションで `--capabilities CAPABILITY_IAM` を設定しているのは IAM ロールを作成するために必要になるためです。
 
 5. CloudShell を閉じる
 
