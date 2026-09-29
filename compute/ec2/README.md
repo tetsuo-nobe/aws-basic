@@ -105,9 +105,9 @@ cd  ~
 
 Session Manager で接続した状態で、以下のコマンドを順に実行します。
 
-### 3-1. Flask のインストール
+### 3-1. Python の Web アプリフレームワーク: Flask のインストール
 
-1. pip をインストールする
+1. pip をインストールする (pip は Python のパッケージ管理ツールです）
 
 ```bash
 sudo dnf install -y python3-pip
