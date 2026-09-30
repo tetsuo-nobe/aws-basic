@@ -102,8 +102,9 @@ cd  ~
 ---
 
 ## 3. Python Web アプリケーションの作成
+* Session Manager で接続した状態で、以下のコマンドを順に実行します。
 
-Session Manager で接続した状態で、以下のコマンドを順に実行します。
+* **コピーして貼り付けてください。Session Manager では Ctrl + Shift + v で貼り付けることができます。**
 
 ### 3-1. Python の Web アプリフレームワーク: Flask のインストール
 
